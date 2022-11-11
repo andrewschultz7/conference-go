@@ -150,8 +150,6 @@ class LocationDetailEncoder(ModelEncoder):
         "created",
         "updated",
         "picture_url",
-        "description",
-        "temp",
     ]
 
     def get_extra_data(self, o):
@@ -165,21 +163,27 @@ def api_show_location(request, id):
             location = Location.objects.get(id=id)
 
             # conference = Conference.objects.get(id=id)
-            # weather = get_weather_data(
-            #     conference.location.city,
-            #     conference.location.state.abbreviation,
-            # )
-            # return JsonResponse(
-            #     {"conference": conference, "weather": weather},
-            #     encoder=ConferenceDetailEncoder,
-            #     safe=False,
-            # )
+            weather = get_weather_data(
+                location.city,
+                location.state.abbreviation,
+            )
 
+            if location.picture_url is None:
+                photo = get_photo(location.city, location.state.abbreviation)
+                # content.update(photo)
+                location.picture_url = photo
             return JsonResponse(
-                location,
+                {"location": location, "weather": weather},
                 encoder=LocationDetailEncoder,
                 safe=False,
             )
+
+            # return JsonResponse(
+            #     location,
+            #     encoder=LocationDetailEncoder,
+            #     safe=False,
+            # )
+
         except Location.DoesNotExist:
             return JsonResponse(
                 {"message": "Invalid location id"},
