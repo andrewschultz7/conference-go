@@ -3,14 +3,6 @@ from django.urls import reverse
 
 
 class State(models.Model):
-    """
-    The State model represents a US state with its name
-    and abbreviation.
-
-    State is a Value Object and, therefore, does not have a
-    direct URL to view it.
-    """
-
     name = models.CharField(max_length=20)
     abbreviation = models.CharField(max_length=2)
 
@@ -22,17 +14,15 @@ class State(models.Model):
 
 
 class Location(models.Model):
-    """
-    The Location model describes the place at which an
-    Event takes place, like a hotel or conference center.
-    """
-
     name = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
     room_count = models.PositiveSmallIntegerField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-
+    weather = models.IntegerField(null=True)
+    picture_url = models.TextField(null=True)
+    description = models.TextField(null=True)
+    temp = models.IntegerField(null=True)
     state = models.ForeignKey(
         State,
         related_name="+",  # do not create a related name on State
@@ -50,17 +40,10 @@ class Location(models.Model):
 
 
 class Conference(models.Model):
-    """
-    The Conference model describes a specific conference.
-    """
-
-    # Has a one-to-many relationship with presentations.Presentation
-    # Has a one-to-many relationship with attendees.Attendee
-
     name = models.CharField(max_length=200)
     starts = models.DateTimeField()
     ends = models.DateTimeField()
-    description = models.TextField()
+    description = models.TextField(null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     max_presentations = models.PositiveSmallIntegerField()

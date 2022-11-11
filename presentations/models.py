@@ -3,14 +3,6 @@ from django.urls import reverse
 
 
 class Status(models.Model):
-    """
-    The Status model provides a status to a Presentation, which
-    can be SUBMITTED, APPROVED, or REJECTED.
-
-    Status is a Value Object and, therefore, does not have a
-    direct URL to view it.
-    """
-
     name = models.CharField(max_length=10)
 
     def __str__(self):
@@ -22,11 +14,6 @@ class Status(models.Model):
 
 
 class Presentation(models.Model):
-    """
-    The Presentation model represents a presentation that a person
-    wants to give at the conference.
-    """
-
     presenter_name = models.CharField(max_length=150)
     company_name = models.CharField(max_length=150, null=True, blank=True)
     presenter_email = models.EmailField()
@@ -47,11 +34,26 @@ class Presentation(models.Model):
         on_delete=models.CASCADE,
     )
 
+    def approve(self):
+        self.status = Status.objects.get(name="APPROVED")
+        self.save()
+
+    def reject(self):
+        self.status = Status.objects.get(name="REJECTED")
+        self.save()
+
     def get_api_url(self):
         return reverse("api_show_presentation", kwargs={"id": self.id})
 
     def __str__(self):
         return self.title
+
+    @classmethod
+    def create(cls, **kwargs):
+        kwargs["status"] = Status.objects.get(name="SUBMITTED")
+        presentation = cls(**kwargs)
+        presentation.save()
+        return presentation
 
     class Meta:
         ordering = ("title",)  # Default ordering for presentation
