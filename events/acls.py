@@ -37,5 +37,4 @@ def get_weather_data(city, state):
         "desciption": weather["weather"][0]["description"],
     }
 
-    print(temperature)
     return temperature
