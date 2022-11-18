@@ -29,10 +29,12 @@ class AttendeeEncoder(ModelEncoder):
     }
 
     def get_extra_data(self, o):
-        count = len(AccountVO.objects.filter(email=o.email))
+        count = (AccountVO.objects.filter(email=o.email)).count()
+        print(f"{count} AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         if count > 0:
             return {"has_account": True}
-        return {"has_account": False}
+        else:
+            return {"has_account": False}
 
 
 @require_http_methods(["GET", "POST"])

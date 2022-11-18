@@ -22,22 +22,18 @@ def update_AccountVO(ch, method, properties, body):
     email = content["email"]
     is_active = content["is_active"]
     updated_string = content["updated"]
-    update = datetime.datetime.fromisoformat(updated_string)
-    #   updated = convert updated_string from ISO string to datetime
+    updated = datetime.fromisoformat(updated_string)
     if is_active:
         AccountVO.objects.update_or_create(
             first_name=first_name,
             last_name=last_name,
             email=email,
             is_active=is_active,
-            update=update,
+            updated=updated,
         )
 
     else:
-        try:
-            AccountVO.objects.filter(email=email).delete()
-        except AccountVO.DoesNotExist:
-            pass
+        AccountVO.objects.filter(email=email).delete()
 
 
 while True:
