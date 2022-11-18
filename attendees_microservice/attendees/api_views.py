@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from common.json import ModelEncoder
-from .models import Attendee, ConferenceVO
+from .models import Attendee, ConferenceVO, AccountVO
 import json
 from django.views.decorators.http import require_http_methods
 
@@ -27,6 +27,12 @@ class AttendeeEncoder(ModelEncoder):
     encoders = {
         "conference": ConferenceVODetailEncoder(),
     }
+
+    def get_extra_data(self, o):
+        count = len(AccountVO.objects.filter(email=o.email))
+        if count > 0:
+            return {"has_account": True}
+        return {"has_account": False}
 
 
 @require_http_methods(["GET", "POST"])
